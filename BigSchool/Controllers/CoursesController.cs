@@ -46,7 +46,7 @@ namespace BigSchool.Controllers
                 var course = new Course()
                 {
                     Place = courseViewModel.Place,
-                    DateTime = DateTime.Parse(courseViewModel.Date +" "+ courseViewModel.Time),
+                    DateTime = courseViewModel.getDateTime(),
                     CategoryId = courseViewModel.CategoryId,
                     LecturerId = userID
                 };
@@ -64,12 +64,16 @@ namespace BigSchool.Controllers
             }
         }
         
+        [Authorize]
         public ActionResult ManageCourses()
         {
             try
             {
                 var userID = User.Identity.GetUserId();
-                var courses = dbContext.Courses.Where(c => c.LecturerId == userID);
+                var courses = dbContext.Courses
+                    .Include(l=>l.Lecturer)
+                    .Include(c=>c.Category)
+                    .Where(c => c.LecturerId == userID);
                 return View(courses);
             }
             catch (Exception ex)

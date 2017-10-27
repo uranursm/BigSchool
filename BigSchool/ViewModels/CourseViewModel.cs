@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace BigSchool.ViewModels
 {
@@ -26,6 +27,18 @@ namespace BigSchool.ViewModels
         [Required(ErrorMessage = "Category is Required")]
         [Display(Name ="Category")]
         public int CategoryId { get; set; }
+
+        internal DateTime getDateTime()
+        {
+            DateTime dateTime;
+            var isValid = DateTime.TryParseExact(Date,
+                "dd/M/yyyy",
+                CultureInfo.CurrentCulture,
+                DateTimeStyles.None,
+                out dateTime);
+            return DateTime.Parse(string.Format("{0} {1}", dateTime.ToShortDateString(), Time));
+        }
     }
+
 
 }
